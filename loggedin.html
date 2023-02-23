@@ -46,7 +46,7 @@
                     var file = files[0];
                     var fileName = file.name;
                     var filePath = 'my-first-bucket-path/' + fileName;
-                    var fileUrl = 'https://' + BUCKET_REGION + '.amazonaws.com/my-first-bucket/' +  filePath;
+                    var fileUrl = 'https://' + bucketRegion + '.amazonaws.com/my-first-bucket/' +  filePath;
             
                     s3.upload({
                                     Key: filePath,
