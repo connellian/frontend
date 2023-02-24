@@ -288,7 +288,7 @@ function UploadS3Objects(email) {
                     var fileName = file.name;
                     var filePath = attributeEmail +'/' + fileName;
                     var fileUrl = 'https://' + 'us-west-2' + '.amazonaws.com/' +  filePath;
-            
+                    var s3 = new AWS.S3();
                     s3.upload({
                                     Key: filePath,
                                     Body: file,
