@@ -37,7 +37,13 @@
     <input id="verifyCodeButton" type="button" value="Verify" onclick="verifyCode()" style="display:none">
     <input id="listS3ObjectsButton" type="button" value="List S3 Objects" onclick="listS3Objects()" style="display:none"></br></br>
     <!---Creating another button for uploading a document to the S3 bucket-->
+    <div>
+        <input type="file" id="fileUpload" style="display:none">
+    </div>
     <input id="uploadS3ObjectButton" type="button" value="Upload Document" onclick="UploadS3Objects()" style="display:none"></br></br>
+    <!--- END Creating another button for uploading a document to the S3 bucket-->
+
+
     <input id="clearLogsButton" type="button" value="Clear Logs" onclick="clearLogs()">
     </br></br>
     <div id="loader" class="loader" style="display:none"></div>
@@ -120,6 +126,7 @@
             $("#verifyCodeButton").hide();
             $("#listS3ObjectsButton").show();
             $("#uploadS3ObjectButton").show();
+            $("#fileUpload").show();
             $("#bucketNameInput").show();
             $("#logOutButton").show();
         }
