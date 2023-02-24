@@ -329,7 +329,7 @@
             });
         }
 /*   TEST S3Object Upload                                                     */
-
+function UploadS3Objects() {
 var bucketName = $("#bucketNameInput").val();
 var files = document.getElementById('fileUpload').files;
 var file = files[0];
@@ -357,21 +357,7 @@ s3.upload(params, function(err, data) {
     }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 
 
