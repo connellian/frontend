@@ -270,52 +270,7 @@
             
         }
 
-/*   TEST S3Object Upload                                                     */
 
-function UploadS3Objects(email) {  
-                var files = document.getElementById('fileUpload').files;
-                /*testing this line to see if I can add email as a bucket path*/
-                var dataEmail = {
-                Name : 'email',
-                Value : email
-                };
-                var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
-                /*END - testing this line to see if I can add email as a bucket path*/
-
-                if (files) 
-                {
-                    var file = files[0];
-                    var fileName = file.name;
-                    var bucketName = $("#bucketNameInput").val();
-                    var filePath = fileName;
-                    /*var filePath = attributeEmail +'/' + fileName;*/
-                    /*var fileUrl = 'https://' + bucketName + '.amazonaws.com/' +  filePath; */
-                    var s3 = new AWS.S3({
-                        apiVersion: '2006-03-01',
-                        params: {Bucket:$("#bucketNameInput").val()}
-                    });
-                    s3.upload({
-                                    Key: filePath,
-                                    Body: file,
-                                    ACL: 'public-read'
-                                }, function(err, data) {
-                                    if(err) {
-                                        reject('error');
-                                    }
-                                    
-                                    alert('Successfully Uploaded!');
-                                }).on('httpUploadProgress', function (progress) {
-                                    var uploaded = parseInt((progress.loaded * 100) / progress.total);
-                                    $("progress").attr('value', uploaded);
-                                });
-                }
-      }
-
-
-
-
-
-/*  END  TEST S3Object Upload                                                     */
 
 
         /*
@@ -373,7 +328,52 @@ function UploadS3Objects(email) {
                 $("#loader").hide();
             });
         }
+/*   TEST S3Object Upload                                                     */
 
+function UploadS3Objects(email) {  
+                var files = document.getElementById('fileUpload').files;
+                /*testing this line to see if I can add email as a bucket path*/
+                var dataEmail = {
+                Name : 'email',
+                Value : email
+                };
+                var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+                /*END - testing this line to see if I can add email as a bucket path*/
+
+                if (files) 
+                {
+                    var file = files[0];
+                    var fileName = file.name;
+                    var bucketName = $("#bucketNameInput").val();
+                    var filePath = fileName;
+                    /*var filePath = attributeEmail +'/' + fileName;*/
+                    /*var fileUrl = 'https://' + bucketName + '.amazonaws.com/' +  filePath; */
+                    var s3 = new AWS.S3({
+                        apiVersion: '2006-03-01',
+                        params: {Bucket:$("#bucketNameInput").val()}
+                    });
+                    s3.upload({
+                                    Key: filePath,
+                                    Body: file,
+                                    ACL: 'public-read'
+                                }, function(err, data) {
+                                    if(err) {
+                                        reject('error');
+                                    }
+                                    
+                                    alert('Successfully Uploaded!');
+                                }).on('httpUploadProgress', function (progress) {
+                                    var uploaded = parseInt((progress.loaded * 100) / progress.total);
+                                    $("progress").attr('value', uploaded);
+                                });
+                }
+      }
+
+
+
+
+
+/*  END  TEST S3Object Upload                                                     */
         /*
         If user has logged in before, get the previous session so user doesn't need to log in again.
         */
