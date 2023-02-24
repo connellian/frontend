@@ -274,12 +274,14 @@
 
 function UploadS3Objects() {  
                 var files = document.getElementById('fileUpload').files;
+                /*testing this line to see if I can add email as a bucket path*/
+                var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
                 if (files) 
                 {
                     var file = files[0];
                     var fileName = file.name;
-                    var filePath = 'my-first-bucket-path/' + fileName;
-                    var fileUrl = 'https://' + bucketRegion + '.amazonaws.com/my-first-bucket/' +  filePath;
+                    var filePath = attributeEmail +'/' + fileName;
+                    var fileUrl = 'https://' + 'us-west-2' + '.amazonaws.com/' +  filePath;
             
                     s3.upload({
                                     Key: filePath,
