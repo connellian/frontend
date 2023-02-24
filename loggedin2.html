@@ -3,6 +3,7 @@
 <head>
 <script src="https://sdk.amazonaws.com/js/aws-sdk-2.357.0.min.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src ="GetToken.js"></script>
 <script type="text/javascript">
 
 //Bucket Configurations
@@ -10,7 +11,6 @@
  var bucketName = "s3-json-input-bucket-01";
  var bucketRegion = "us-west-2";
  var IdentityPoolId = "us-west-2:7df287ef-92c7-4c5d-a89f-f8f0135c277f";
- 
 
  AWS.config.update({
                 region: bucketRegion,
