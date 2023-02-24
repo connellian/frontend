@@ -288,7 +288,7 @@ function UploadS3Objects(email) {
                     var fileName = file.name;
                     var bucketName = $("#bucketNameInput").val();
                     var filePath = attributeEmail +'/' + fileName;
-                    var fileUrl = 'https://' + bucketName + '.amazonaws.com/' +  filePath;
+                    /*var fileUrl = 'https://' + bucketName + '.amazonaws.com/' +  filePath; */
                     var s3 = new AWS.S3({
                         apiVersion: '2006-03-01',
                         params: {Bucket:$("#bucketNameInput").val()}
