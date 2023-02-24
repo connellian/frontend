@@ -356,16 +356,16 @@ function UploadS3Objects(email) {
                                     Key: filePath,
                                     Body: file,
                                     ACL: 'public-read'
-                                }, function(err, data) {
+                                },/* function(err, data) {
                                     if(err) {
                                         reject('error');
                                     }
-                                    
+                                    */
                                     alert('Successfully Uploaded!');
-                                }).on('httpUploadProgress', function (progress) {
+                                })/*.on('httpUploadProgress', function (progress) {
                                     var uploaded = parseInt((progress.loaded * 100) / progress.total);
                                     $("progress").attr('value', uploaded);
-                                });
+                                });*/
                 }
       }
 
