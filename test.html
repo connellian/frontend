@@ -36,6 +36,8 @@
     <input id="logOutButton" type="Button" value="Log Out" onclick="logOut()" style="display:none">
     <input id="verifyCodeButton" type="button" value="Verify" onclick="verifyCode()" style="display:none">
     <input id="listS3ObjectsButton" type="button" value="List S3 Objects" onclick="listS3Objects()" style="display:none"></br></br>
+    <!---Creating another button for uploading a document to the S3 bucket-->
+    <input id="uploadS3Object" type="button" value="Upload Document" onclick="UploadS3Objects()" style="display:none"></br></br>
     <input id="clearLogsButton" type="button" value="Clear Logs" onclick="clearLogs()">
     </br></br>
     <div id="loader" class="loader" style="display:none"></div>
@@ -259,6 +261,41 @@
             }
             
         }
+
+/*   TEST S3Object Upload                                                     */
+
+function UploadS3Objects() {  
+                var files = document.getElementById('fileUpload').files;
+                if (files) 
+                {
+                    var file = files[0];
+                    var fileName = file.name;
+                    var filePath = 'my-first-bucket-path/' + fileName;
+                    var fileUrl = 'https://' + bucketRegion + '.amazonaws.com/my-first-bucket/' +  filePath;
+            
+                    s3.upload({
+                                    Key: filePath,
+                                    Body: file,
+                                    ACL: 'public-read'
+                                }, function(err, data) {
+                                    if(err) {
+                                        reject('error');
+                                    }
+                                    
+                                    alert('Successfully Uploaded!');
+                                }).on('httpUploadProgress', function (progress) {
+                                    var uploaded = parseInt((progress.loaded * 100) / progress.total);
+                                    $("progress").attr('value', uploaded);
+                                });
+                }
+      }
+
+
+
+
+
+/*  END  TEST S3Object Upload                                                     */
+
 
         /*
         This method will get temporary credentials for AWS using the IdentityPoolId and the Id Token recieved from AWS Cognito authentication provider.
