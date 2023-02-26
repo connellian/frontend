@@ -26,7 +26,8 @@
     </style>
     
     <input id="emailInput" type="text" placeholder="Email" style="display:none"/></br>
-    <input id="userNameInput" type="text" placeholder="Username"/></br>
+    <input id="givenNameInput" type="text" placeholder="First Name"/></br>
+    <input id="familyNameInput" type="text" placeholder="Last Name"/></br>
     <input id="passwordInput" type="password" placeholder="Password"/></br>
     <input id="confirmPasswordInput" type="password" placeholder="Confirm Password" style="display:none"/></br>
     <input id="verificationCodeInput" type="text" placeholder="Verification Code" style="display:none"/></br>
@@ -73,7 +74,8 @@
 
         function switchToVerificationCodeView(){
             $("#emailInput").hide();
-            $("#userNameInput").hide();
+            $("#givenNameInput").hide();
+            $("#familyNameInput").hide();
             $("#passwordInput").hide();
             $("#confirmPasswordInput").hide();
             $("#logInButton").hide();
@@ -87,7 +89,8 @@
 
         function switchToRegisterView(){
             $("#emailInput").show();
-            $("#userNameInput").show();
+            $("#givenNameInput").show();
+            $("#familyNameInput").show();
             $("#passwordInput").show();
             $("#confirmPasswordInput").show();
             $("#logInButton").hide();
@@ -100,7 +103,9 @@
         }
 
         function switchToLogInView(){
-            $("#userNameInput").val('');
+           /* $("#userNameInput").val('');  */
+            $("#givenNameInput").hide();
+            $("#familyNameInput").hide();
             $("#passwordInput").val('');
             $("#emailInput").hide();
             $("#userNameInput").show();
@@ -117,7 +122,8 @@
 
         function switchToLoggedInView(){
             $("#emailInput").hide();
-            $("#userNameInput").hide();
+            $("#givenNameInput").hide();
+            $("#familyNameInput").hide();
             $("#passwordInput").hide();
             $("#confirmPasswordInput").hide();
             $("#logInButton").hide();
@@ -154,17 +160,17 @@
         */
         function logIn(){
 
-            if(!$('#userNameInput').val() || !$('#passwordInput').val()){
-                logMessage('Please enter Username and Password!');
+            if(!$("#emailInput").val() || !$('#passwordInput').val()){
+                logMessage('Please enter email and Password!');
             }else{
                 var authenticationData = {
-                    Username : $('#userNameInput').val(),
+                    email : $("#emailInput").val(),
                     Password : $("#passwordInput").val(),
                 };
                 var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
 
                 var userData = {
-                    Username : $('#userNameInput').val(),
+                    email : $('#emailInput').val(),
                     Pool : userPool
                 };
                 cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
@@ -194,11 +200,11 @@
         function register(){
             switchToRegisterView();
 
-            if( !$('#emailInput').val() || !$('#userNameInput').val()  || !$('#passwordInput').val() || !$('#confirmPasswordInput').val() ) {
+            if( !$('#emailInput').val() || !$('#givenNameInput').val() || !$('#familyNameInput').val() || !$('#passwordInput').val() || !$('#confirmPasswordInput').val() ) {
                     logMessage('Please fill all the fields!');
             }else{
                 if($('#passwordInput').val() == $('#confirmPasswordInput').val()){
-                    registerUser($('#emailInput').val(), $('#userNameInput').val(), $('#passwordInput').val());
+                    registerUser($('#emailInput').val(), $('#givenNameInput').val(), $('#familyNameInput').val() ,$('#passwordInput').val());
                 }else{
                     logMessage('Confirm password failed!');
                 }
@@ -227,9 +233,49 @@
             }
         }
 
+
+         /*
+        User registration using AWS Cognito
+        */
+
+        
+        function registerUser(email, given_name, family_name, password){
+            var attributeList = [];
+            
+            var dataEmail = {
+                Name : 'email',
+                Value : email
+            };
+
+            var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+
+            attributeList.push(attributeEmail);
+
+            $("#loader").show();
+            userPool.signUp(given_name, family_name, password, attributeList, null, function(err, result){
+                if (err) {
+                    logMessage(err.message);
+                }else{
+                    cognitoUser = result.user;
+                    logMessage('Registration Successful!');
+                    logMessage('Username is: ' + cognitoUser.getUsername());
+                    logMessage('Please enter the verification code sent to your Email.');
+                    switchToVerificationCodeView();
+                }
+                $("#loader").hide();
+            });
+        }
+
+
+
+
+
+
         /*
         User registration using AWS Cognito
         */
+
+        /*
         function registerUser(email, username, password){
             var attributeList = [];
             
@@ -256,7 +302,7 @@
                 $("#loader").hide();
             });
         }
-
+*/
         /*
         Starting point for AWS List S3 Objects flow with input validation
         */
