@@ -165,13 +165,13 @@
                 logMessage('Please enter email and Password!');
             }else{
                 var authenticationData = {
-                    username : $("#emailInput").val(),
+                    Username : $("#emailInput").val(),
                     Password : $("#passwordInput").val(),
                 };
                 var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
 
                 var userData = {
-                    email : $('#emailInput').val(),
+                    Username : $('#emailInput').val(),
                     Pool : userPool
                 };
                 cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
