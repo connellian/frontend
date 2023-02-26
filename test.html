@@ -240,20 +240,28 @@
         */
 
         
-        function registerUser(email, given_name, family_name, password){
-            var attributeList = [];
-            
-            var dataEmail = {
-                Name : 'email',
-                Value : email
-            };
+        function registerUser(email, given_name, family_name, password)
+        {
+            const attributeList = [];
+            const emailAttribute = new AmazonCognitoIdentity.CognitoUserAttribute({
+                Name: 'email',
+                Value: email
+            });
+            const firstNameAttribute = new AmazonCognitoIdentity.CognitoUserAttribute({
+                Name: 'given_name',
+                Value: firstName
+             });
+            const lastNameAttribute = new AmazonCognitoIdentity.CognitoUserAttribute({
+                Name: 'family_name',
+                Value: lastName
+            });
 
-            var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
-
-            attributeList.push(attributeEmail);
+            attributeList.push(emailAttribute);
+            attributeList.push(firstNameAttribute);
+            attributeList.push(lastNameAttribute);
 
             $("#loader").show();
-            userPool.signUp(given_name, family_name, password, attributeList, null, function(err, result){
+            userPool.signUp(email, password, attributeList, null, function(err, result){
                 if (err) {
                     logMessage(err.message);
                 }else{
