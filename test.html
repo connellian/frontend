@@ -249,11 +249,11 @@
             });
             const firstNameAttribute = new AmazonCognitoIdentity.CognitoUserAttribute({
                 Name: 'given_name',
-                Value: firstName
+                Value: given_name
              });
             const lastNameAttribute = new AmazonCognitoIdentity.CognitoUserAttribute({
                 Name: 'family_name',
-                Value: lastName
+                Value: family_name
             });
 
             attributeList.push(emailAttribute);
