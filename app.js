@@ -10,13 +10,7 @@ var log = function(entry) {
 
 //ADDING SECTION TO TEST EXPRESS
 
-const express = require('express');
-const path = require('path');
 
-const app = express();
-
-// Serve static files from the "public" directory
-app.use(express.static(path.join(__dirname, 'public')));
 
 
 // END OF EXPRESS SECTION
