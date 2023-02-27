@@ -1,94 +1,504 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Elastic Beanstalk</title>
+<html lang="en">
+<head>
+    <title>MSN AWS App</title>
+</head>
+<body>
+    <script src="./script/jquery.min.js"></script>	
+    <script src="./script/aws-sdk-2.487.0.min.js"></script>
+    <script src="./script/aws-cognito-sdk.min.js"></script>
+    <script src="./script/amazon-cognito-identity.min.js"></script>
+
     <style>
-      body {
-        color: #ffffff;
-        font-family: Arial, sans-serif;
-        font-size:14px;
-        -moz-transition-property: text-shadow;
-        -moz-transition-duration: 4s;
-        -webkit-transition-property: text-shadow;
-        -webkit-transition-duration: 4s;
-        text-shadow: none;
-      }
-      body.blurry {
-        -moz-transition-property: text-shadow;
-        -moz-transition-duration: 4s;
-        -webkit-transition-property: text-shadow;
-        -webkit-transition-duration: 4s;
-        text-shadow: #fff 0px 0px 25px;
-      }
-      a {
-        color: #55aaff;
-      }
-      .textColumn, .linksColumn {
-        padding: 2em;
-      }
-      .textColumn {
-        position: absolute;
-        top: 0px;
-        right: 50%;
-        bottom: 0px;
-        left: 0px;
+    .loader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 2s linear infinite;
+    }
 
-        text-align: right;
-        padding-top: 11em;
-        background-color: #73A53E;
-
-      }
-      .textColumn p {
-        width: 75%;
-        float:right;
-      }
-      .linksColumn {
-        position: absolute;
-        top:0px;
-        right: 0px;
-        bottom: 0px;
-        left: 50%;
-
-        background-color: #33342D;
-      }
-
-      h1 {
-        color: #33342D;
-        font-size: 500%;
-        font-weight: normal;
-        margin-bottom: 0em;
-      }
-      h2 {
-        font-size: 200%;
-        font-weight: normal;
-        margin-bottom: 0em;
-      }
-      ul {
-        padding-left: 1em;
-        margin: 0px;
-      }
-      li {
-        margin: 1em 0em;
-      }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
     </style>
-  </head>
-  <body>
-    <div class="textColumn">
-      <h1>Congratulations</h1>
-      <p>Your first AWS Elastic Beanstalk Node.js application is now running on your own dedicated environment in the AWS Cloud</p>
-      <p>This environment is launched with Elastic Beanstalk Node.js Platform</p>
+    
+    <input id="emailInput" type="text" placeholder="Email" /></br>
+    <input id="givenNameInput" type="text" placeholder="First Name" style="display:none"/></br>
+    <input id="familyNameInput" type="text" placeholder="Last Name" style="display:none"/></br>
+    <input id="passwordInput" type="password" placeholder="Password"/></br>
+    <input id="confirmPasswordInput" type="password" placeholder="Confirm Password" style="display:none"/></br>
+    <input id="verificationCodeInput" type="text" placeholder="Verification Code" style="display:none"/></br>
+    <input id="bucketNameInput" type="text" placeholder="S3 Bucket Name" style="display:none"/></br>
+    <input id="logInButton" type="Button" value="Log In" onclick="logIn()">
+    <input id="registerButton" type="button" value="Register" onclick="register()">
+    <input id="logOutButton" type="Button" value="Log Out" onclick="logOut()" style="display:none">
+    <input id="verifyCodeButton" type="button" value="Verify" onclick="verifyCode()" style="display:none">
+    <input id="listS3ObjectsButton" type="button" value="List S3 Objects" onclick="listS3Objects()" style="display:none"></br></br>
+    <!---Creating another button for uploading a document to the S3 bucket-->
+    <div>
+        <input type="file" id="fileUpload" style="display:none">
     </div>
-    <div class="linksColumn">
-      <h2>What's Next?</h2>
-      <ul>
-        <li><a href="http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/Welcome.html">AWS Elastic Beanstalk overview</a></li>
-        <li><a href="http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.html">AWS Elastic Beanstalk concepts</a></li>
-        <li><a href="http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_nodejs_express.html">Deploy an Express Application to AWS Elastic Beanstalk</a></li>
-        <li><a href="http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_nodejs_express_elasticache.html">Deploy an Express Application with Amazon ElastiCache to AWS Elastic Beanstalk</a></li>
-        <li><a href="http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_nodejs_geddy_elasticache.html">Deploy a Geddy Application with Amazon ElastiCache to AWS Elastic Beanstalk </a></li>
-        <li><a href="http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_nodejs_custom_container.html">Customizing and Configuring a Node.js Container </a></li>
-        <li><a href="http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.loggingS3.title.html">Working with Logs</a></li>
-      </ul>
-    </div>
-  </body>
+    <input id="uploadS3ObjectButton" type="button" value="Upload Document" onclick="UploadS3Objects()" style="display:none"></br></br>
+    <!--- END Creating another button for uploading a document to the S3 bucket-->
+
+
+    <input id="clearLogsButton" type="button" value="Clear Logs" onclick="clearLogs()">
+    </br></br>
+    <div id="loader" class="loader" style="display:none"></div>
+    </br></br>
+    <div id="log" style="width: 500px; height: 300px; overflow-y: scroll;"></div>
+    
+
+    <script>
+
+        //=============== AWS IDs ===============
+        var userPoolId = 'us-west-2_VR9TWv1sf';
+        var clientId = '3fk8gkl494ebsevkii3da1c3tv';
+        var region = 'us-west-2';
+        var identityPoolId = 'us-west-2:7df287ef-92c7-4c5d-a89f-f8f0135c277f';
+        //=============== AWS IDs ===============
+
+        var cognitoUser;
+        var idToken;
+        var userPool;
+        
+        var poolData = { 
+            UserPoolId : userPoolId,
+            ClientId : clientId
+        };
+        
+        getCurrentLoggedInSession();
+
+        function switchToVerificationCodeView(){
+            $("#emailInput").hide();
+            $("#givenNameInput").hide();
+            $("#familyNameInput").hide();
+            $("#passwordInput").hide();
+            $("#confirmPasswordInput").hide();
+            $("#logInButton").hide();
+            $("#registerButton").hide();
+            $("#bucketNameInput").hide();
+            $("#verificationCodeInput").show();
+            $("#verifyCodeButton").show();
+            $("#listS3ObjectsButton").hide();
+            $("#logOutButton").hide();
+        }
+
+        function switchToRegisterView(){
+            $("#emailInput").show();
+            $("#givenNameInput").show();
+            $("#familyNameInput").show();
+            $("#passwordInput").show();
+            $("#confirmPasswordInput").show();
+            $("#logInButton").hide();
+            $("#registerButton").show();
+            $("#verificationCodeInput").hide();
+            $("#verifyCodeButton").hide();
+            $("#listS3ObjectsButton").hide();
+            $("#bucketNameInput").hide();
+            $("#logOutButton").hide();
+        }
+
+        function switchToLogInView(){
+           /* $("#userNameInput").val('');  */
+            $("#emailInput").val('');
+            $("#emailInput").show();
+            $("#givenNameInput").hide();
+            $("#familyNameInput").hide();
+            $("#passwordInput").val('');
+            $("#userNameInput").show();
+            $("#passwordInput").show();
+            $("#confirmPasswordInput").hide();
+            $("#logInButton").show();
+            $("#registerButton").show();
+            $("#verificationCodeInput").hide();
+            $("#verifyCodeButton").hide();
+            $("#listS3ObjectsButton").hide();
+            $("#bucketNameInput").hide();
+            $("#logOutButton").hide();
+        }
+
+        function switchToLoggedInView(){
+            $("#emailInput").hide();
+            $("#givenNameInput").hide();
+            $("#familyNameInput").hide();
+            $("#passwordInput").hide();
+            $("#confirmPasswordInput").hide();
+            $("#logInButton").hide();
+            $("#registerButton").hide();
+            $("#verificationCodeInput").hide();
+            $("#verifyCodeButton").hide();
+            $("#listS3ObjectsButton").show();
+            $("#uploadS3ObjectButton").show();
+            $("#fileUpload").show();
+            $("#bucketNameInput").show();
+            $("#logOutButton").show();
+        }
+
+        function clearLogs(){
+            $('#log').empty();
+        }
+
+        /*
+        Starting point for user logout flow
+        */
+        function logOut(){
+            if (cognitoUser != null) {
+
+                $("#loader").show();
+                cognitoUser.signOut();
+                switchToLogInView();
+                logMessage('Logged out!');
+                $("#loader").hide();
+            }
+        }
+
+        /*
+        Starting point for user login flow with input validation
+        */
+        function logIn(){
+
+            if(!$("#emailInput").val() || !$('#passwordInput').val()){
+                logMessage('Please enter email and Password!');
+            }else{
+                var authenticationData = {
+                    Username : $("#emailInput").val(),
+                    Password : $("#passwordInput").val(),
+                };
+                var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+
+                var userData = {
+                    Username : $('#emailInput').val(),
+                    Pool : userPool
+                };
+                cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+                $("#loader").show();
+                cognitoUser.authenticateUser(authenticationDetails, {
+                    onSuccess: function (result) {
+                        logMessage('Logged in!');
+                        switchToLoggedInView();
+
+                        idToken = result.getIdToken().getJwtToken();
+                        getCognitoIdentityCredentials();
+                    },
+
+                    onFailure: function(err) {
+                        logMessage(err.message);
+                        $("#loader").hide();
+                    },
+
+                });
+            }
+        }
+
+        /*
+        Starting point for user registration flow with input validation
+        */
+        function register(){
+            switchToRegisterView();
+
+            if( !$('#emailInput').val() || !$('#givenNameInput').val() || !$('#familyNameInput').val() || !$('#passwordInput').val() || !$('#confirmPasswordInput').val() ) {
+                    logMessage('Please fill all the fields!');
+            }else{
+                if($('#passwordInput').val() == $('#confirmPasswordInput').val()){
+                    registerUser($('#emailInput').val(), $('#givenNameInput').val(), $('#familyNameInput').val() ,$('#passwordInput').val());
+                }else{
+                    logMessage('Confirm password failed!');
+                }
+                
+            }
+        }
+
+        /*
+        Starting point for user verification using AWS Cognito with input validation
+        */
+        function verifyCode(){
+            if( !$('#verificationCodeInput').val() ) {
+                logMessage('Please enter verification field!');
+            }else{
+                $("#loader").show();
+                cognitoUser.confirmRegistration($('#verificationCodeInput').val(), true, function(err, result) {
+                    if (err) {
+                        logMessage(err.message);
+                    }else{
+                        logMessage('Successfully verified code!');
+                        switchToLogInView();
+                    }
+                    
+                    $("#loader").hide();
+                });
+            }
+        }
+
+
+         /*
+        User registration using AWS Cognito
+        */
+
+        
+        function registerUser(email, given_name, family_name, password)
+        {
+            const attributeList = [];
+            const emailAttribute = new AmazonCognitoIdentity.CognitoUserAttribute({
+                Name: 'email',
+                Value: email
+            });
+            const firstNameAttribute = new AmazonCognitoIdentity.CognitoUserAttribute({
+                Name: 'given_name',
+                Value: given_name
+             });
+            const lastNameAttribute = new AmazonCognitoIdentity.CognitoUserAttribute({
+                Name: 'family_name',
+                Value: family_name
+            });
+
+            attributeList.push(emailAttribute);
+            attributeList.push(firstNameAttribute);
+            attributeList.push(lastNameAttribute);
+
+            $("#loader").show();
+            userPool.signUp(email, password, attributeList, null, function(err, result){
+                if (err) {
+                    logMessage(err.message);
+                }else{
+                    cognitoUser = result.user;
+                    logMessage('Registration Successful!');
+                    logMessage('Username is: ' + cognitoUser.getUsername());
+                    logMessage('Please enter the verification code sent to your Email.');
+                    switchToVerificationCodeView();
+                }
+                $("#loader").hide();
+            });
+        }
+
+
+
+
+
+
+        /*
+        User registration using AWS Cognito
+        */
+
+        /*
+        function registerUser(email, username, password){
+            var attributeList = [];
+            
+            var dataEmail = {
+                Name : 'email',
+                Value : email
+            };
+
+            var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+
+            attributeList.push(attributeEmail);
+
+            $("#loader").show();
+            userPool.signUp(username, password, attributeList, null, function(err, result){
+                if (err) {
+                    logMessage(err.message);
+                }else{
+                    cognitoUser = result.user;
+                    logMessage('Registration Successful!');
+                    logMessage('Username is: ' + cognitoUser.getUsername());
+                    logMessage('Please enter the verification code sent to your Email.');
+                    switchToVerificationCodeView();
+                }
+                $("#loader").hide();
+            });
+        }
+*/
+        /*
+        Starting point for AWS List S3 Objects flow with input validation
+        */
+        function listS3Objects(){
+            if(!$('#bucketNameInput').val()){
+                logMessage('Please enter the name of the S3 Bucket!');
+            }else{
+                $("#loader").show();
+                getAWSS3BucketObjects();
+            }
+            
+        }
+
+
+
+
+        /*
+        This method will get temporary credentials for AWS using the IdentityPoolId and the Id Token recieved from AWS Cognito authentication provider.
+        */
+        function getCognitoIdentityCredentials(){
+            AWS.config.region = region;
+
+            var loginMap = {};
+            loginMap['cognito-idp.' + region + '.amazonaws.com/' + userPoolId] = idToken;
+
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: identityPoolId,
+                Logins: loginMap
+            });
+
+            AWS.config.credentials.clearCachedId();
+
+            AWS.config.credentials.get(function(err) {
+                if (err){
+                    logMessage(err.message);
+                }
+                else {
+                    logMessage('AWS Access Key: '+ AWS.config.credentials.accessKeyId);
+                    logMessage('AWS Secret Key: '+ AWS.config.credentials.secretAccessKey);
+                    logMessage('AWS Session Token: '+ AWS.config.credentials.sessionToken);
+                }
+
+                $("#loader").hide();
+            });
+        }
+
+        /*
+        This method will use AWS S3 SDK to get a list of S3 bucket object.
+        Before using this method, AWS Credentials must be set in AWS config.
+        */
+        function getAWSS3BucketObjects(){            
+            var s3 = new AWS.S3();
+
+            var params = {
+                Bucket: $("#bucketNameInput").val()
+            };
+
+            s3.listObjects(params, function(err, data) {
+                if (err) logMessage(err.message);
+                else{
+                    logMessage('');
+                    logMessage('====== S3 Bucket Objects ======');
+                    data.Contents.forEach(element => {
+                        logMessage(element.Key);
+                    });
+                    logMessage('');
+                }
+
+                $("#loader").hide();
+            });
+        }
+/*   TEST S3Object Upload                                                     */
+function UploadS3Objects() {
+var bucketName = $("#bucketNameInput").val();
+var files = document.getElementById('fileUpload').files;
+var file = files[0];
+var fileName = file.name;
+
+// Replace 'FILE_DATA' with the contents of the file you want to upload
+var fileData = 'FILE_DATA';
+
+// Create an instance of the S3 class
+var s3 = new AWS.S3();
+
+// Set the parameters for the S3 object
+var params = {
+    Bucket: bucketName,
+    Key: fileName,
+    Body: file
+};
+
+// Upload the file to S3
+s3.upload(params, function(err, data) {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log('Successfully uploaded file to S3:', data.Location);
+    }
+});
+
+}
+
+
+
+/*
+function UploadS3Objects() {  
+                var files = document.getElementById('fileUpload').files;
+                /*testing this line to see if I can add email as a bucket path*/
+                /*var dataEmail = {
+                Name : 'email',
+                Value : email
+                };
+                var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);*/
+                /*END - testing this line to see if I can add email as a bucket path*/
+/*
+                if (files) 
+                {
+                    var file = files[0];
+                    var fileName = file.name;
+                    var bucketName = $("#bucketNameInput").val();
+                    var filePath = "test-path/" +fileName;
+                    /*var filePath = attributeEmail +'/' + fileName;*/
+                    /*var fileUrl = 'https://' + bucketName + '.amazonaws.com/' +  filePath; */
+ /*                   var s3 = new AWS.S3({
+                        apiVersion: '2006-03-01',
+                        params: {Bucket:$("#bucketNameInput").val()}
+                    });
+                    s3.upload({
+                                    Key: filePath,
+                                    Body: file,
+                                    ACL: 'public-read'
+                                } 
+                                
+                                
+                                , function(err, data) {
+                                    if(err) {
+                                        reject('error');
+                                    }
+                                    
+                                    alert('Successfully Uploaded!');
+                                })/*.on('httpUploadProgress', function (progress) {
+                                    var uploaded = parseInt((progress.loaded * 100) / progress.total);
+                                    $("progress").attr('value', uploaded);
+                                });*/
+/*                }
+      }
+*/
+
+
+
+
+/*  END  TEST S3Object Upload                                                     */
+        /*
+        If user has logged in before, get the previous session so user doesn't need to log in again.
+        */
+        function getCurrentLoggedInSession(){
+
+            $("#loader").show();
+            userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+            cognitoUser = userPool.getCurrentUser();
+
+            if(cognitoUser != null){
+                cognitoUser.getSession(function(err, session) {
+                    if (err) {
+                        logMessage(err.message);
+                    }else{
+                        logMessage('Session found! Logged in.');
+                        switchToLoggedInView();
+                        idToken = session.getIdToken().getJwtToken();
+                        getCognitoIdentityCredentials();
+                    }
+                    $("#loader").hide();
+                });
+            }else{
+                logMessage('Session expired. Please log in again.');
+                $("#loader").hide();
+            }
+
+        }
+
+        /*
+        This is a logging method that will be used throught the application
+        */
+        function logMessage(message){
+            $('#log').append(message + '</br>');
+        }
+    </script>
+
+</body>
 </html>
