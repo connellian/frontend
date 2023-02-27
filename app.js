@@ -7,6 +7,19 @@ var log = function(entry) {
     fs.appendFileSync('/tmp/sample-app.log', new Date().toISOString() + ' - ' + entry + '\n');
 };
 
+
+//ADDING SECTION TO TEST EXPRESS
+
+const express = require('express');
+const path = require('path');
+
+const app = express();
+
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+// END OF EXPRESS SECTION
 var server = http.createServer(function (req, res) {
     if (req.method === 'POST') {
         var body = '';
