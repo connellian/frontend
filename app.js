@@ -10,8 +10,11 @@ var log = function(entry) {
 
 //ADDING SECTION TO TEST EXPRESS
 
+var express = require('express');
+var app = express();
 
-
+// first parameter is the mount point, second is the location in the file system
+app.use("/public", express.static(__dirname + "/public"));
 
 // END OF EXPRESS SECTION
 var server = http.createServer(function (req, res) {
