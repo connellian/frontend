@@ -1,70 +1,11 @@
-//ADDING SECTION TO TEST EXPRESS
+// Set up express server
+const express = require('express');
+const app = express();
 
-var express = require('express');
-var app = express();
+// Serve static files from public directory
+app.use(express.static('public'));
 
-// first parameter is the mount point, second is the location in the file system
-app.use(express.static(__dirname + "public"));
-
-// END OF EXPRESS SECTION
-
-var port = process.env.PORT || 3000,
-    http = require('http'),
-    fs = require('fs'),
-    html = fs.readFileSync('index.html');
-
-var log = function(entry) {
-    fs.appendFileSync('/tmp/sample-app.log', new Date().toISOString() + ' - ' + entry + '\n');
-};
-
-
-
-var server = http.createServer(function (req, res) {
-    if (req.method === 'POST') {
-        var body = '';
-
-        req.on('data', function(chunk) {
-            body += chunk;
-        });
-
-        req.on('end', function() {
-            if (req.url === '/') {
-                log('Received message: ' + body);
-            } else if (req.url = '/scheduled') {
-                log('Received task ' + req.headers['x-aws-sqsd-taskname'] + ' scheduled at ' + req.headers['x-aws-sqsd-scheduled-at']);
-            }
-
-            res.writeHead(200, 'OK', {'Content-Type': 'text/plain'});
-            res.end();
-        });
-    } else {
-        res.writeHead(200);
-        res.write(html);
-        res.end();
-    }
+// Start server
+app.listen(3000, () => {
+  console.log('Server is listening on port 3000');
 });
-
-// Listen on port 3000, IP defaults to 127.0.0.1
-server.listen(port);
-
-// Put a friendly message on the terminal
-console.log('Server running at http://127.0.0.1:' + port + '/');
-
-//const express = require('express');
-//const path = require('path');
-
-//const app = express();
-
-// Serve static files from the "public" directory
-//app.use(express.static(path.join(__dirname, 'public')));
-
-// Set up a route to handle GET requests to the root URL
-//app.get('/', (req, res) => {
- // res.sendFile(path.join(__dirname, 'public', 'index.html'));
-//});
-
-// Start the server
-//const port = process.env.PORT || 3000;
-//app.listen(port, () => {
-//  console.log(`Server running on port ${port}`);
-//});
