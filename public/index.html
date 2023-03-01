@@ -386,6 +386,7 @@ s3.upload(params, function(err, data) {
                 else{
                     logMessage('');
                     logMessage('Document sucessfully uploaded');
+                    $("#loader").hide();
                 }
 });
 
