@@ -387,13 +387,11 @@ var params = {
 
 // Upload the file to S3
 s3.upload(params, function(err, data) {
-    if (err) {
-        console.log(err);
-        logMessage( 'Document ' + key +  ' failed to upload');
-    } else {
-        console.log('Successfully uploaded file to S3:', data.Location);
-        logMessage( 'Document ' + key +  ' sucessfully uploaded');
-    }
+    if (err) logMessage(err.message);
+                else{
+                    logMessage('');
+                    logMessage('Document sucessfully uploaded');
+                }
 });
 
 }
