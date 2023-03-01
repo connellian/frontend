@@ -461,7 +461,7 @@ function scantable() {
       console.error('Error scanning table: ', err);
     } else {
       // Display the scan result
-      const result = JSON.stringify(data.Items);
+      const result = convertToTable(data.Items);
       document.getElementById('result').innerHTML = result;
     }
   });
