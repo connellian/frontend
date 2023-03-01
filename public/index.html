@@ -39,6 +39,21 @@
     <input id="verifyCodeButton" type="button" value="Verify" onclick="verifyCode()" style="display:none">
     <input id="listS3ObjectsButton" type="button" value="List S3 Objects" onclick="listS3Objects()" style="display:none"></br></br>
     <!---Creating another button for uploading a document to the S3 bucket-->
+    <input id="clearLogsButton" type="button" value="Clear Logs" onclick="clearLogs()">
+    </br></br>
+    <div id="loader" class="loader" style="display:none"></div>
+    </br></br>
+    <div id="log" style="width: 500px; height: 300px; overflow-y: scroll;"></div>
+    <!--This next portion -->
+    <a href="lookup.html"> Keyword Search? </a>
+    <form>
+        <label for="value">Value:</label>
+        <input type="text" id="value" name="value"><br><br>
+        <input type="button" value="Scan" onclick="scantable()">
+      </form>
+      <br><br>
+      <div id="result"></div>
+
     <div>
         <input type="file" id="fileUpload" style="display:none">
     </div>
