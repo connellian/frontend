@@ -8,6 +8,7 @@
     <script type = "text/javascript" src="/javascripts/aws-sdk-2.487.0.min.js"></script>
     <script type = "text/javascript" src="/javascripts/aws-cognito-sdk.min.js"></script>
     <script type = "text/javascript" src="/javascripts/amazon-cognito-identity.min.js"></script>
+    <script type = "text/javascript" src="/javascripts/scanTable.js"></script>
 
     <style>
     .loader {
@@ -50,8 +51,15 @@
     <div id="loader" class="loader" style="display:none"></div>
     </br></br>
     <div id="log" style="width: 500px; height: 300px; overflow-y: scroll;"></div>
-    
+    <!--This next portion -->
     <a href="lookup.html"> Keyword Search? </a>
+    <form>
+        <label for="value">Value:</label>
+        <input type="text" id="value" name="value"><br><br>
+        <input type="button" value="Scan" onclick="scanTable()">
+      </form>
+      <br><br>
+      <div id="result"></div>
 
     <script type = "application/javascript">
 
