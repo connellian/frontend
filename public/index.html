@@ -8,7 +8,7 @@
     <script type = "text/javascript" src="/javascripts/aws-sdk-2.487.0.min.js"></script>
     <script type = "text/javascript" src="/javascripts/aws-cognito-sdk.min.js"></script>
     <script type = "text/javascript" src="/javascripts/amazon-cognito-identity.min.js"></script>
-    <script type = "text/javascript" src="/javascripts/scantable.js"></script>
+    <!--<script type = "text/javascript" src="/javascripts/scantable.js"></script> -->
 
     <style>
     .loader {
@@ -56,7 +56,7 @@
     <form>
         <label for="value">Value:</label>
         <input type="text" id="value" name="value"><br><br>
-        <input type="button" value="Scan" onclick="scanTable()">
+        <input type="button" value="Scan" onclick="scantable()">
       </form>
       <br><br>
       <div id="result"></div>
@@ -287,40 +287,6 @@
 
 
 
-
-
-        /*
-        User registration using AWS Cognito
-        */
-
-        /*
-        function registerUser(email, username, password){
-            var attributeList = [];
-            
-            var dataEmail = {
-                Name : 'email',
-                Value : email
-            };
-
-            var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
-
-            attributeList.push(attributeEmail);
-
-            $("#loader").show();
-            userPool.signUp(username, password, attributeList, null, function(err, result){
-                if (err) {
-                    logMessage(err.message);
-                }else{
-                    cognitoUser = result.user;
-                    logMessage('Registration Successful!');
-                    logMessage('Username is: ' + cognitoUser.getUsername());
-                    logMessage('Please enter the verification code sent to your Email.');
-                    switchToVerificationCodeView();
-                }
-                $("#loader").hide();
-            });
-        }
-*/
         /*
         Starting point for AWS List S3 Objects flow with input validation
         */
@@ -424,54 +390,6 @@ s3.upload(params, function(err, data) {
 }
 
 
-
-/*
-function UploadS3Objects() {  
-                var files = document.getElementById('fileUpload').files;
-                /*testing this line to see if I can add email as a bucket path*/
-                /*var dataEmail = {
-                Name : 'email',
-                Value : email
-                };
-                var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);*/
-                /*END - testing this line to see if I can add email as a bucket path*/
-/*
-                if (files) 
-                {
-                    var file = files[0];
-                    var fileName = file.name;
-                    var bucketName = $("#bucketNameInput").val();
-                    var filePath = "test-path/" +fileName;
-                    /*var filePath = attributeEmail +'/' + fileName;*/
-                    /*var fileUrl = 'https://' + bucketName + '.amazonaws.com/' +  filePath; */
- /*                   var s3 = new AWS.S3({
-                        apiVersion: '2006-03-01',
-                        params: {Bucket:$("#bucketNameInput").val()}
-                    });
-                    s3.upload({
-                                    Key: filePath,
-                                    Body: file,
-                                    ACL: 'public-read'
-                                } 
-                                
-                                
-                                , function(err, data) {
-                                    if(err) {
-                                        reject('error');
-                                    }
-                                    
-                                    alert('Successfully Uploaded!');
-                                })/*.on('httpUploadProgress', function (progress) {
-                                    var uploaded = parseInt((progress.loaded * 100) / progress.total);
-                                    $("progress").attr('value', uploaded);
-                                });*/
-/*                }
-      }
-*/
-
-
-
-
 /*  END  TEST S3Object Upload                                                     */
         /*
         If user has logged in before, get the previous session so user doesn't need to log in again.
@@ -507,6 +425,40 @@ function UploadS3Objects() {
         function logMessage(message){
             $('#log').append(message + '</br>');
         }
+
+
+
+
+
+        // Set the region and create a DynamoDB client
+AWS.config.update({region: 'us-west-2'});
+const dynamodb = new AWS.DynamoDB();
+
+function scantable() {
+  // Get the scan parameters from the form
+  const attribute = "string";
+  const value = document.getElementById('value').value;
+
+  // Set the scan parameters
+  const params = {
+    TableName: 's3-json-textract-tablev2',
+    FilterExpression: `contains(${attribute}, :value)`,
+    ExpressionAttributeValues: {
+      ':value': {S: value}
+    }
+  };
+
+  // Scan the table
+  dynamodb.scan(params, function(err, data) {
+    if (err) {
+      console.error('Error scanning table: ', err);
+    } else {
+      // Display the scan result
+      const result = JSON.stringify(data.Items);
+      document.getElementById('result').innerHTML = result;
+    }
+  });
+}
     </script>
 
 </body>

@@ -2,7 +2,7 @@
 AWS.config.update({region: 'us-west-2'});
 const dynamodb = new AWS.DynamoDB();
 
-function scanTable() {
+function scantable() {
   // Get the scan parameters from the form
   const attribute = "string";
   const value = document.getElementById('value').value;
