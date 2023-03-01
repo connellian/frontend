@@ -46,6 +46,14 @@
     <div id="log" style="width: 500px; height: 300px; overflow-y: scroll;"></div>
     <!--This next portion -->
 
+    <h3>Upload a document</h3>
+    <div>
+        <input type="file" id="fileUpload" style="display:none">
+    </div>
+    <input id="uploadS3ObjectButton" type="button" value="Upload Document" onclick="UploadS3Objects()" style="display:none"></br></br>
+
+
+
     <h3>Search documents for keyword</h3>
     <form>
         <label for="value">Value:</label>
@@ -55,11 +63,8 @@
       <br><br>
       <div id="result"></div>
 
-    <div>
-        <input type="file" id="fileUpload" style="display:none">
-    </div>
-    <input id="uploadS3ObjectButton" type="button" value="Upload Document" onclick="UploadS3Objects()" style="display:none"></br></br>
-    <!--- END Creating another button for uploading a document to the S3 bucket-->
+    
+    
 
 
 
