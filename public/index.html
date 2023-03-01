@@ -436,7 +436,7 @@ const dynamodb = new AWS.DynamoDB();
 
 function scantable() {
   // Get the scan parameters from the form
-  const attribute = "string";
+  const attribute = "content";
   const value = document.getElementById('value').value;
 
   // Set the scan parameters
