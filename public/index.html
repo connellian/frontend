@@ -346,7 +346,7 @@
 
             var params = {
                 //Bucket: $("#bucketNameInput").val()
-                Bucket: "s3-json-input-bucket-02"
+                Bucket: "s3-json-input-bucket-01"
             };
 
             s3.listObjects(params, function(err, data) {
@@ -366,7 +366,7 @@
 /*   TEST S3Object Upload                                                     */
 function UploadS3Objects() {
 //var bucketName = $("#bucketNameInput").val();
-bucketName = 's3-json-input-bucket-02'
+bucketName = 's3-json-input-bucket-01'
 var files = document.getElementById('fileUpload').files;
 var file = files[0];
 var fileName = file.name;
