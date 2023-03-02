@@ -32,7 +32,7 @@
     <input id="passwordInput" type="password" placeholder="Password"/></br>
     <input id="confirmPasswordInput" type="password" placeholder="Confirm Password" style="display:none"/></br>
     <input id="verificationCodeInput" type="text" placeholder="Verification Code" style="display:none"/></br>
-    <input id="bucketNameInput" type="text" placeholder="S3 Bucket Name" style="display:none"/></br>
+    <!--    <input id="bucketNameInput" type="text" placeholder="S3 Bucket Name" style="display:none"/></br> -->
     <input id="logInButton" type="Button" value="Log In" onclick="logIn()">
     <input id="registerButton" type="button" value="Register" onclick="register()">
     <input id="logOutButton" type="Button" value="Log Out" onclick="logOut()" style="display:none">
@@ -142,7 +142,7 @@
             $("#verificationCodeInput").hide();
             $("#verifyCodeButton").hide();
             $("#listS3ObjectsButton").show();
-            $("uploadTitle").show();
+            $("#uploadTitle").show();
             $("#uploadS3ObjectButton").show();
             $("#fileUpload").show();
             $("#bucketNameInput").show();
@@ -292,6 +292,8 @@
         /*
         Starting point for AWS List S3 Objects flow with input validation
         */
+
+        /*
         function listS3Objects(){
             if(!$('#bucketNameInput').val()){
                 logMessage('Please enter the name of the S3 Bucket!');
@@ -302,7 +304,7 @@
             
         }
 
-
+        */
 
 
         /*
@@ -343,7 +345,8 @@
             var s3 = new AWS.S3();
 
             var params = {
-                Bucket: $("#bucketNameInput").val()
+                //Bucket: $("#bucketNameInput").val()
+                Bucket: "s3-json-input-bucket-02"
             };
 
             s3.listObjects(params, function(err, data) {
@@ -362,7 +365,8 @@
         }
 /*   TEST S3Object Upload                                                     */
 function UploadS3Objects() {
-var bucketName = $("#bucketNameInput").val();
+//var bucketName = $("#bucketNameInput").val();
+bucketName = 's3-json-input-bucket-02'
 var files = document.getElementById('fileUpload').files;
 var file = files[0];
 var fileName = file.name;
